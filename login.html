@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="login_style.css">
+</head>
+<body>
+    <div class="login-box">
+        <h2>Enter Chat</h2>
+        <p>Choose any name to start chatting.<br>No signup required</p>
+
+        <div class="input-group">
+            <label for="username">Display Name</label>
+            <input type="text" id="username" placeholder="Type your name here...." autocomplete="off">
+        </div>
+
+        <button class="login-btn" onclick="enterChat()">Join Chatroom</button>
+
+        <div class="extra-links">
+            <p>Anonymous | No Login | Real-time</p>
+        </div>
+    </div>
+
+
+    <script>
+        function enterChat(){
+            const name = document.getElementById("username").value.trim();
+
+            if(name === ""){
+                alert("Please enter a name before joining.");
+                return
+            }
+            
+            // Storing name in localStorage to use in chatroom
+            localStorage.setItem("chatName", name);
+
+            // Redirect to chatroom page 
+            window.location.href = "chat.html"
+
+        }
+            // Allow "Entee" key to join
+            document.getElementById("username").addEventListener("keypress", function(event){
+                if(event.key === "Enter"){
+                    enterChat();
+                }
+            })
+    </script>
+
+</body>
+</html>
