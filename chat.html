@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="chat_style.css">
+</head>
+<body>
+    <div class="chat-window">
+        <div class="chat-header">
+            <h2>Global Chat</h2>
+            <!-- <div class="UName">YOU</div> -->
+        </div>
+
+        <div id="chat-display">
+            <div class="msg received">
+                <span class="msg-name">Alex</span>
+                Lorem ipsum dolor, sit amet consectetur adipisicing elit. Magni, possimus!
+            </div>
+
+            <div class="msg sent">
+                <span class="msg-name">You</span>
+                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ullam quas tempore libero!
+            </div>
+        </div>
+
+            <div class="chat-input-area">
+                <input type="text" id="message-input" placeholder="Type message..." autocomplete="off">
+                <button id="send-btn">Send</button>
+            </div>
+    </div>
+
+
+    <script>
+        const chatDisplay = document.getElementById("chat-display");
+        const messageInput = document.getElementById("message-input");
+        const sendBtn = document.getElementById("send-btn");
+        const headerName = document.querySelector(".chat-header");
+
+        const username = localStorage.getItem("chatName");
+
+        if(!username){
+            window.location.href = "login.html"
+        }
+
+        const hdrName = document.createElement("div");
+        hdrName.innerHTML = `<div class="UName">${username}</div>`;
+        headerName.appendChild(hdrName)
+
+        function sendMessage(){
+            const text = messageInput.value.trim();
+            if(text !== ""){
+                const msgDiv = document.createElement("div");
+                msgDiv.classList.add('msg', 'sent');
+                msgDiv.innerHTML = `<span class="msg-name">${username}</span>${text}`;
+                chatDisplay.appendChild(msgDiv);
+                messageInput.value = "";
+                chatDisplay.scrollTop = chatDisplay.scrollHeight;
+            }
+        }
+
+        sendBtn.addEventListener("click", sendMessage);
+        messageInput.addEventListener("keypress", (e) =>{
+            if(e.key === "Enter") sendMessage();
+        })
+    </script>
+
+</body>
+</html>
