@@ -14,15 +14,7 @@
         </div>
 
         <div id="chat-display">
-            <div class="msg received">
-                <span class="msg-name">Alex</span>
-                Lorem ipsum dolor, sit amet consectetur adipisicing elit. Magni, possimus!
-            </div>
-
-            <div class="msg sent">
-                <span class="msg-name">You</span>
-                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ullam quas tempore libero!
-            </div>
+           
         </div>
 
             <div class="chat-input-area">
@@ -32,11 +24,38 @@
     </div>
 
 
-    <script>
+    <script type="module">
         const chatDisplay = document.getElementById("chat-display");
         const messageInput = document.getElementById("message-input");
         const sendBtn = document.getElementById("send-btn");
         const headerName = document.querySelector(".chat-header");
+
+
+
+        
+            // Import the functions you need from the SDKs you need
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+            import { getDatabase, push, ref, onChildAdded } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
+            // TODO: Add SDKs for Firebase products that you want to use
+            // https://firebase.google.com/docs/web/setup#available-libraries
+
+            // Your web app's Firebase configuration
+            const firebaseConfig = {
+                apiKey: "Add your API key",
+                authDomain: "chatroom-ac42e.firebaseapp.com",
+                databaseURL: "Add your database URL",
+                projectId: "chatroom-ac42e",
+                storageBucket: "chatroom-ac42e.firebasestorage.app",
+                messagingSenderId: "349978651211",
+                appId: "1:349978651211:web:e180006c41642193777bce"
+            };
+
+            // Initialize Firebase
+            const app = initializeApp(firebaseConfig);
+            const database = getDatabase(app);  
+
+
+
 
         const username = localStorage.getItem("chatName");
 
@@ -48,15 +67,49 @@
         hdrName.innerHTML = `<div class="UName">${username}</div>`;
         headerName.appendChild(hdrName)
 
+        const messageRef = ref(database, 'messages/');
+
+        onChildAdded(messageRef, (snapshot) => {
+            const data = snapshot.val();
+
+            const displayName = data.name === username ? "You" : data.name
+
+            const msgDiv = document.createElement("div");
+            msgDiv.classList.add('msg');
+
+            if(data.name == username){
+                msgDiv.classList.add('sent');
+            }else{
+                msgDiv.classList.add('received');
+            }
+
+            msgDiv.innerHTML = `<span class="msg-name">${displayName}</span>${data.message}`;
+            chatDisplay.appendChild(msgDiv);
+            chatDisplay.scrollTop = chatDisplay.scrollHeight;
+        });
+
+
+
         function sendMessage(){
             const text = messageInput.value.trim();
             if(text !== ""){
-                const msgDiv = document.createElement("div");
-                msgDiv.classList.add('msg', 'sent');
-                msgDiv.innerHTML = `<span class="msg-name">${username}</span>${text}`;
-                chatDisplay.appendChild(msgDiv);
+                // const msgDiv = document.createElement("div");
+                // msgDiv.classList.add('msg', 'sent');
+                // msgDiv.innerHTML = `<span class="msg-name">${username}</span>${text}`;
+                // chatDisplay.appendChild(msgDiv);
                 messageInput.value = "";
-                chatDisplay.scrollTop = chatDisplay.scrollHeight;
+                // chatDisplay.scrollTop = chatDisplay.scrollHeight;
+
+
+
+                push(ref(database, 'messages'),{
+                    name: username,
+                    message: text,
+                    timestamp: Date.now()
+                })
+
+
+
             }
         }
 
